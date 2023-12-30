@@ -6,7 +6,13 @@ This template should help get you started developing with Tauri + Vue 3 in Vite.
 
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
 
-## 使用组件
+## Project purpose
+```
+Load data by importing files and provide the ability to export the entire configuration as a backup file for restoration after import. Monitor Modbus data in the form of charts and text lists, allowing for flexible drag-and-drop layout, 
+and the freedom to choose components and their parameters.
+```
+
+## Use the component.
 ```
 TDesign
 Vue-router
@@ -21,10 +27,10 @@ Less
 > yarn add echarts
 > yarn add less less-loader --dev
 
-#### TDesign按需导入
+#### Import TDesign on demand.
 > yarn add unplugin-vue-components unplugin-auto-import --dev
 
-- Vite配置
+- Vite config
 ```javascript
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';

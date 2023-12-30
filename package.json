@@ -1,0 +1,30 @@
+{
+  "name": "modbus-monitor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "TAURI_ENV=dev tauri dev --no-watch",
+    "compile": "tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^1.5.1",
+    "echarts": "^5.4.3",
+    "tdesign-vue-next": "^1.7.0",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.6",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.3",
+    "unplugin-auto-import": "^0.17.2",
+    "unplugin-vue-components": "^0.26.0",
+    "vite": "^4.4.4"
+  }
+}

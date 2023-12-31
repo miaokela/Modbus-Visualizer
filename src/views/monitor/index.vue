@@ -49,6 +49,12 @@
               v-if="item.component"
               :style-obj="style"
             ></component> -->
+            <div class="operation">
+              <span class="remove" @click="removeItem(item.i)">x</span>
+            </div>
+            <div>
+
+            </div>
           </div>
         </GridItem>
       </GridLayout>
@@ -57,10 +63,11 @@
 </template>
 
 <script setup>
-import { ref, onUnmounted, onMounted, nextTick } from "vue";
+import { ref, onUnmounted, onMounted, nextTick, computed } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { GridLayout, GridItem } from "vue3-grid-layout-next";
 import ContextMenu from "@imengyu/vue3-context-menu";
+import store from "@/store";
 
 const result = ref("");
 
@@ -80,12 +87,6 @@ const menus = ref("1");
  * grid-layout
  */
 const responsive = ref(true);
-const layout = ref([
-  { x: 0, y: 0, w: 2, h: 2, i: "0", static: false },
-  { x: 4, y: 0, w: 2, h: 5, i: "2", static: false },
-  { x: 6, y: 0, w: 2, h: 3, i: "3", static: false },
-  { x: 8, y: 0, w: 2, h: 3, i: "4", static: false },
-]);
 
 /**
  * context-menu
@@ -112,6 +113,17 @@ const onContextMenu = (e) => {
     ],
   });
 };
+
+/**
+ * 删除节点
+ */
+const removeItem = (idx) => {
+  store.dispatch("removeLayout", idx);
+};
+
+const layout = computed(() => {
+  return store.getters.layout;
+})
 
 onMounted(() => {
   nextTick(() => {
@@ -147,6 +159,16 @@ onMounted(() => {
 }
 
 .t-head-menu {
-  background-color: #2B2B2B;
+  background-color: #2b2b2b;
+}
+
+.operation {
+  display: flex;
+  justify-content: flex-end;
+
+  .remove {
+    cursor: pointer;
+    padding-right: 10px;
+  }
 }
 </style>

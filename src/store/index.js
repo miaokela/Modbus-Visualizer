@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import greet from './modules/greet';
+import global from './modules/global';
 
 export default createStore({
     state: {},
@@ -7,6 +8,7 @@ export default createStore({
     actions: {},
     getters: {},
     modules: {
-        a: greet,
+        greet: greet,
+        global: global
     },
 });

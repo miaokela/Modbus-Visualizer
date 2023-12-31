@@ -1,9 +1,8 @@
 <template lang="">
   <div class="titlebar" data-tauri-drag-region>
-    <div class="mac-window-controls">
-      <div class="mac-window-control close" @click="appWindow.close()"></div>
-      <div class="mac-window-control minimize" @click="appWindow.minimize()"></div>
-      <div class="mac-window-control maximize" @click="appWindow.close()"></div>
+    <div class="window-controls">
+      <div class="window-control close" @click="appWindow.close()"></div>
+      <div class="window-control minimize" @click="appWindow.minimize()"></div>
     </div>
     <div class="title">Modbus Visualizer</div>
   </div>
@@ -44,13 +43,13 @@ body {
   color: #A9B7C6;
 }
 
-.mac-window-controls {
+.window-controls {
   display: flex;
-  width: 54px;
+  width: 35px;
   justify-content: space-between;
 }
 
-.mac-window-control {
+.window-control {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -60,33 +59,33 @@ body {
   cursor: pointer;
 }
 
-.mac-window-control.close {
+.window-control.close {
   background-color: #FF5F57;
 }
 
-.mac-window-control.minimize {
+.window-control.minimize {
   background-color: #FFBD2E;
 }
 
-.mac-window-control.maximize {
+.window-control.maximize {
   background-color: #27C93F;
 }
 
-.mac-window-control.minimize::after {
+.window-control.minimize::after {
   content: "－";
   color: black;
   font-size: 10px;
   position: relative;
 }
 
-.mac-window-control.maximize::after {
-  content: "＋";
+.window-control.maximize::after {
+  content: "↔";
   color: black;
   font-size: 10px;
   position: relative;
 }
 
-.mac-window-control.close::after {
+.window-control.close::after {
   content: "×";
   color: black;
   font-size: 10px;

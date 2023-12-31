@@ -15,4 +15,7 @@ import topBar from "@/views/monitor/components/top-bar.vue";
   margin-top: 30px;
   height: calc(100vh - 30px);
 }
+body {
+  background-color: gray;
+}
 </style>

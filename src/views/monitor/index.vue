@@ -1,6 +1,6 @@
 <template>
   <div>
-    <t-head-menu v-model="menus" theme="dark" height="120px">
+    <!-- <t-head-menu v-model="menus" theme="dark" height="120px">
       <template #logo>
         <img
           height="20"
@@ -17,7 +17,7 @@
           </t-button>
         </div>
       </template>
-    </t-head-menu>
+    </t-head-menu> -->
     <div
       style="width: 100%; height: calc(100vh - 96px); overflow-y: scroll"
       @contextmenu="onContextMenu($event)"
@@ -144,5 +144,9 @@ onMounted(() => {
 
 .vue-grid-item {
   background-color: #4b4b4b;
+}
+
+.t-head-menu {
+  background-color: #2B2B2B;
 }
 </style>

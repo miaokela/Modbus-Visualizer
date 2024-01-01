@@ -258,6 +258,7 @@ pub fn task_thread() {
                             // param.start_address - task.start_address 为获取的数据在result中的偏移量 再配合寄存器数量获取对应的数据 转化成最终数值根据大端序
                             let mut val: f64 = 0.0;
 
+                            // [1,2,3,4,5,6,7,8,9,10]
                             if param.data_type == 1 {
                                 val = convert_result(&param, &task, &result, 1);
                             } else if param.data_type == 2 || param.data_type == 3 {
@@ -306,6 +307,8 @@ pub fn set_into_read_task() {
                 let mut tasks = TASKS.lock().unwrap();
 
                 // 所有参数根据 slave_id、register_type 2个条件 分成多组
+                // 从站地址!!!
+                // 寄存器地址类型 线圈 输入寄存器 保持寄存器
                 let mut groups: HashMap<(u8, u8), Vec<Param>> = HashMap::new();
                 for param in params.values() {
                     let key: (u8, u8) = (param.slave_id, param.register_type);

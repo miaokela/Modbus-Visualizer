@@ -1762,6 +1762,7 @@ dependencies = [
  "simplelog",
  "tauri",
  "tauri-build",
+ "tokio",
  "tokio-modbus",
  "toml 0.6.0",
 ]

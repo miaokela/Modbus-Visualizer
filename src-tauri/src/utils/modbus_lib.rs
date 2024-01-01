@@ -74,7 +74,6 @@ impl ModbusConnection {
     // }
 
     pub fn reconnect(&mut self, ip: &str) {
-        self.disconnect();
         self.connect(ip);
     }
 }

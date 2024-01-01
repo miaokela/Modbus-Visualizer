@@ -107,6 +107,9 @@ const generateUUID = () => {
  * context-menu
  */
 const onContextMenu = (e) => {
+  if (store.getters.gridState) {
+    return;
+  }
   //prevent the browser's default menu
   e.preventDefault();
   //show your menu

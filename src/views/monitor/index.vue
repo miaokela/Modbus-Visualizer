@@ -23,12 +23,13 @@
       @contextmenu="onContextMenu($event)"
       flat
       dark
+      @dblclick="store.dispatch('setGridState')"
     >
       <GridLayout
         v-model:layout="layout"
         :is-draggable="true"
         :is-resizable="true"
-        :col-num="12"
+        :col-num="colNum"
         :row-height="30"
       >
         <GridItem
@@ -42,18 +43,19 @@
           :w="item.w"
           :h="item.h"
           :i="item.i"
+          @resized="resizeChart"
         >
-          <div class="l-item-slot">
-            <!-- <component
-              :is="ComponentsLib[item.component]"
-              v-if="item.component"
-              :style-obj="style"
-            ></component> -->
+          <div class="l-item-slot" style="width: 100%; height: 100%;">
             <div class="operation">
               <span class="remove" @click="removeItem(item.i)">x</span>
             </div>
-            <div>
-
+            <div style="width: 100%; height: 100%;">
+              <param-line :param-id="item.paramId" />
+              <!-- <component
+                :is="item.component"
+                v-if="item.component"
+                :param-id="item.paramId"
+              ></component> -->
             </div>
           </div>
         </GridItem>
@@ -68,14 +70,19 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { GridLayout, GridItem } from "vue3-grid-layout-next";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import store from "@/store";
+import { v4 as uuidv4 } from "uuid";
+import paramLine from "@/views/monitor/components/param-line.vue";
 
-const result = ref("");
+const params = ref([]);
 
-async function getResult() {
-  result.value = await invoke("get_result", { paramId: 1 });
+async function getResult(paramId) {
+  return await invoke("get_result", { paramId: paramId });
 }
 
-const interval = setInterval(getResult, 1000);
+async function getParams() {
+  params.value = await invoke("get_params", {});
+  console.log(`params: ${JSON.stringify(params.value)}`);
+}
 
 onUnmounted(() => {
   clearInterval(interval);
@@ -87,6 +94,14 @@ const menus = ref("1");
  * grid-layout
  */
 const responsive = ref(true);
+const colNum = ref(12);
+
+/**
+ * 获取uuid
+ */
+const generateUUID = () => {
+  return uuidv4();
+};
 
 /**
  * context-menu
@@ -101,18 +116,44 @@ const onContextMenu = (e) => {
     theme: "flat dark",
     items: [
       {
-        label: "A menu item",
-        onClick: () => {
-          alert("You click a menu item");
-        },
-      },
-      {
-        label: "A submenu",
-        children: [{ label: "Item1" }, { label: "Item2" }, { label: "Item3" }],
+        label: "Add Line Chart",
+        children: paramChildren.value,
       },
     ],
   });
 };
+
+const paramChildren = computed(() => {
+  const children = [];
+  for (let [_, item] of Object.entries(params.value)) {
+    // 已添加
+    const index = layout.value.findIndex(
+      (item) => item.paramId === item.param_id
+    );
+    if (index !== -1) {
+      continue;
+    }
+
+    children.push({
+      label: item.name,
+      value: item.param_id,
+      onClick: () => {
+        store.dispatch("addLayout", {
+          x: (layout.value.length * 2) % (colNum.value || 12),
+          y: layout.value.length + (colNum.value || 12),
+          w: 4,
+          h: 4,
+          i: generateUUID(),
+          component: "param-line",
+          static: false,
+          paramId: item.param_id,
+          paramName: item.name,
+        });
+      },
+    });
+  }
+  return children;
+});
 
 /**
  * 删除节点
@@ -123,10 +164,20 @@ const removeItem = (idx) => {
 
 const layout = computed(() => {
   return store.getters.layout;
-})
+});
+
+/**
+ * Resize Chart
+ */
+const resizeChart = (i, newX, newY, newHPx, newWPx) => {
+  store.dispatch('setResizeTag');
+};
 
 onMounted(() => {
   nextTick(() => {
+    // 获取所有参数列表
+    getParams();
+
     const divs = document.querySelectorAll(".l-item");
     divs.forEach(function (div) {
       div.addEventListener("contextmenu", function (event) {

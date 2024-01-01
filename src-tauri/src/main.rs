@@ -23,7 +23,7 @@ fn main() {
     // 触发保存文件
     trigger_file_change();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_result])
+        .invoke_handler(tauri::generate_handler![get_result, get_params])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

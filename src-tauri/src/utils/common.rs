@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
+use log::info;
 
 use crate::utils::modbus_lib::get_modbus_conn;
 
@@ -19,7 +20,7 @@ pub struct Task {
     slave_id: u8,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Param {
     pub param_id: u16,
     pub slave_id: u8,
@@ -116,6 +117,19 @@ pub fn update_connection(connection: &Connection) {
 pub fn get_result(param_id: u16) -> Option<ModbusResult> {
     let results = RESULTS.lock().unwrap();
     results.get(&param_id).cloned()
+}
+
+/**
+ * 获取所有参数列表
+ */
+#[tauri::command]
+pub fn get_params() -> Option<HashMap<u16, Param>> {
+    let params = PARAMS.lock().unwrap();
+    if params.is_empty() {
+        None
+    } else {
+        Some(params.clone())
+    }
 }
 
 /**

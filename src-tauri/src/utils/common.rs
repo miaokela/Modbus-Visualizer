@@ -249,7 +249,7 @@ pub fn task_thread() {
             {
                 let mut tasks: std::sync::MutexGuard<'_, Vec<Task>> = TASKS.lock().unwrap();
                 // println!("获取的参数: {:?}", params);
-                println!("获取的任务: {:?}", tasks);
+                // println!("获取的任务: {:?}", tasks);
     
                 let c_task = tasks.pop();
                 match c_task {
@@ -259,7 +259,7 @@ pub fn task_thread() {
                     None => {
                         // 等待一段时间，以减少CPU使用率
                         thread::sleep(Duration::from_millis(100));
-                        println!("没有任务了");
+                        // println!("没有任务了");
                         continue;
                     }
                     

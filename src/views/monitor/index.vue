@@ -19,7 +19,7 @@
       </template>
     </t-head-menu> -->
     <div
-      style="width: 100%; height: 100%; overflow-y: scroll"
+      style="width: 100%; height: 100%; overflow-y: auto"
       @contextmenu="onContextMenu($event)"
       flat
       dark

@@ -1,9 +1,14 @@
 use std::sync::{Arc, Mutex};
+use log::info;
 use tokio_modbus::prelude::*;
 use lazy_static::lazy_static;
+use tokio::time::{timeout, Duration};
+use std::io::Error;
+use tokio::runtime::Runtime;
+
 
 pub struct ModbusConnection {
-    pub connection: Option<client::sync::Context>,
+    pub connection: Option<tokio_modbus::client::Context>,
 }
 
 #[allow(dead_code)]
@@ -16,18 +21,33 @@ impl ModbusConnection {
         self.connection.is_some()
     }
 
+    pub async fn connect_async(&mut self, ip: &str) -> Result<(), Error> {
+        let socket_addr = ip.parse().unwrap();
+        let timeout_duration = Duration::from_millis(100);
+
+        let result = timeout(timeout_duration, tcp::connect(socket_addr)).await;
+
+        match result {
+            Ok(Ok(ctx)) => {
+                self.connection = Some(ctx);
+                Ok(())
+            },
+            Ok(Err(e)) => Err(e),
+            Err(_) => Err(Error::new(std::io::ErrorKind::TimedOut, "timeout")),
+        }
+    }
+
     pub fn connect(&mut self, ip: &str) {
         self.disconnect();
-        let socket_addr = ip.parse().unwrap();
-        match client::sync::tcp::connect(socket_addr) {
-            Ok(ctx) => {
-                self.connection = Some(ctx);
+        let rt: Runtime = Runtime::new().unwrap();
+        rt.block_on(async {
+            let result = self.connect_async(ip).await;
+
+            match result {
+                Ok(_) => println!("连接成功"),
+                Err(_) => println!("连接超时"),
             }
-            Err(e) => {
-                println!("Failed to connect: {}", e);
-                // You can return from the function or continue to the next iteration of a loop here.
-            }
-        }
+        });
     }
 
     pub fn disconnect(&mut self) {
@@ -39,10 +59,10 @@ impl ModbusConnection {
         self.connection = None;
     }
 
-    pub fn read_input_registers(&mut self, addr: u16, nb: u16) -> Vec<u16> {
+    pub async fn read_input_registers(&mut self, addr: u16, nb: u16) -> Vec<u16> {
         match self.connection.as_mut() {
             Some(conn) => {
-                match conn.read_input_registers(addr, nb) {
+                match conn.read_input_registers(addr, nb).await {
                     Ok(data) => return data,
                     Err(e) => println!("Error reading input registers: {}", e),
                 }
@@ -52,10 +72,10 @@ impl ModbusConnection {
         vec![]
     }
     
-    pub fn read_registers(&mut self, addr: u16, nb: u16) -> Vec<u16> {
+    pub async fn read_registers(&mut self, addr: u16, nb: u16) -> Vec<u16> {
         match self.connection.as_mut() {
             Some(conn) => {
-                match conn.read_holding_registers(addr, nb) {
+                match conn.read_holding_registers(addr, nb).await {
                     Ok(data) => return data,
                     Err(e) => println!("Error reading holding registers: {}", e),
                 }

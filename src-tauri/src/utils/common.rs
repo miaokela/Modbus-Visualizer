@@ -1,10 +1,11 @@
 use lazy_static::lazy_static;
+use log::info;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
-use log::info;
+use tokio::runtime::Runtime;
 
 use crate::utils::modbus_lib::get_modbus_conn;
 
@@ -139,10 +140,14 @@ pub fn execute_task(task: &Task) -> Vec<u16> {
     // 在这里根据你的具体需求来实现任务执行的逻辑
     // 这个函数应该根据Task和Param来生成一个ModbusResult
     // 这是一个简单的例子，你需要根据你的具体需求来修改它
+    let rt = Runtime::new().unwrap();
     let mut data: Vec<u16> = vec![];
 
     // 读取任务获取值
     if task.operation == 2 {
+        println!("1111");
+        let config = get_config();
+        println!("2222");
         // 根据 operation register_type start_address quantity slave_id 获取值
         // 判断是 register_type 为1 还是2 1 表示保持寄存器 2 表示输入寄存器
         let modbus_conn = get_modbus_conn();
@@ -151,13 +156,18 @@ pub fn execute_task(task: &Task) -> Vec<u16> {
         // 判断是否连接成功 没有连接成功就返回空 并且重连
         if !conn.is_connected() {
             println!("开始重连");
-            let config = get_config();
-            conn.reconnect(&format!("{}:{}", config.connection.ip_address, config.connection.port));
+            conn.reconnect(&format!(
+                "{}:{}",
+                config.connection.ip_address, config.connection.port
+            ));
+            println!("重连成功");
         }
 
         if task.register_type == 1 {
-            data = conn.read_registers(task.start_address, task.quantity);
-            // println!("读取的数据: {:?}", data);
+            rt.block_on(async {
+                data = conn.read_registers(task.start_address, task.quantity).await;
+                // println!("读取的数据: {:?}", data);
+            });
             return data;
         }
         println!("未读取到数据");
@@ -229,62 +239,66 @@ pub fn task_thread() {
     thread::spawn(move || {
         loop {
             // info!("task_thread");
+            let params;
+            let mut tasks;
 
+            // 获取任务
             {
-                // 获取任务
-                let params = PARAMS.lock().unwrap();
+                let params_data = PARAMS.lock().unwrap();
+                params = params_data.clone();
+            }
+            // 获取参数
+            {
+                let tasks_data = TASKS.lock().unwrap();
+                tasks = tasks_data.clone();
+            }
+            // info!("获取的参数: {:?}", params);
 
-                let mut tasks = TASKS.lock().unwrap();
-                // 获取参数
-                // info!("获取的参数: {:?}", params);
+            if let Some(task) = tasks.pop() {
+                // info!("消耗任务: {:?}", task);
+                // 执行任务
+                let result = execute_task(&task);
 
-                if let Some(task) = tasks.pop() {
-                    // info!("消耗任务: {:?}", task);
-                    // 执行任务
-                    let result = execute_task(&task);
-
-                    // 根据 task.register_type task.slave_id 两个条件匹配出符合条件的参数，遍历这些匹配出来的参数将结果写入ModbusResult
-                    for param in params.values() {
-                        if param.slave_id == task.slave_id
-                            && param.register_type == task.register_type
-                        {
-                            // 根据param的 register_type 与data_type从result中匹配出结果
-                            if result.len() == 0 {
-                                continue;
-                            }
-
-                            // 根据 data_type 转换为对应的值 data_type 1为int16 2为int32 3为float32 4为float64
-                            // int16 读取1个寄存器 int32 读取2个寄存器 float32 读取2个寄存器 float64 读取4个寄存器
-                            // param.start_address - task.start_address 为获取的数据在result中的偏移量 再配合寄存器数量获取对应的数据 转化成最终数值根据大端序
-                            let mut val: f64 = 0.0;
-
-                            // [1,2,3,4,5,6,7,8,9,10]
-                            if param.data_type == 1 {
-                                val = convert_result(&param, &task, &result, 1);
-                            } else if param.data_type == 2 || param.data_type == 3 {
-                                val = convert_result(&param, &task, &result, 2);
-                            } else if param.data_type == 4 {
-                                val = convert_result(&param, &task, &result, 4);
-                            }
-                            // info!("val: {}", val);
-
-                            let mut results = RESULTS.lock().unwrap();
-                            results.insert(
-                                param.param_id,
-                                ModbusResult {
-                                    param_id: param.param_id,
-                                    slave_id: param.slave_id,
-                                    start_address: param.start_address,
-                                    data_type: param.data_type,
-                                    operation: param.operation,
-                                    register_type: param.register_type,
-                                    name: param.name.clone(),
-                                    state: 1,
-                                    val: val,
-                                    unit: param.unit.clone(),
-                                },
-                            );
+                // 根据 task.register_type task.slave_id 两个条件匹配出符合条件的参数，遍历这些匹配出来的参数将结果写入ModbusResult
+                for param in params.values() {
+                    if param.slave_id == task.slave_id && param.register_type == task.register_type
+                    {
+                        // 根据param的 register_type 与data_type从result中匹配出结果
+                        if result.len() == 0 {
+                            continue;
                         }
+
+                        // 根据 data_type 转换为对应的值 data_type 1为int16 2为int32 3为float32 4为float64
+                        // int16 读取1个寄存器 int32 读取2个寄存器 float32 读取2个寄存器 float64 读取4个寄存器
+                        // param.start_address - task.start_address 为获取的数据在result中的偏移量 再配合寄存器数量获取对应的数据 转化成最终数值根据大端序
+                        let mut val: f64 = 0.0;
+
+                        // [1,2,3,4,5,6,7,8,9,10]
+                        if param.data_type == 1 {
+                            val = convert_result(&param, &task, &result, 1);
+                        } else if param.data_type == 2 || param.data_type == 3 {
+                            val = convert_result(&param, &task, &result, 2);
+                        } else if param.data_type == 4 {
+                            val = convert_result(&param, &task, &result, 4);
+                        }
+                        // info!("val: {}", val);
+
+                        let mut results = RESULTS.lock().unwrap();
+                        results.insert(
+                            param.param_id,
+                            ModbusResult {
+                                param_id: param.param_id,
+                                slave_id: param.slave_id,
+                                start_address: param.start_address,
+                                data_type: param.data_type,
+                                operation: param.operation,
+                                register_type: param.register_type,
+                                name: param.name.clone(),
+                                state: 1,
+                                val: val,
+                                unit: param.unit.clone(),
+                            },
+                        );
                     }
                 }
             }
@@ -301,53 +315,61 @@ pub fn set_into_read_task() {
     thread::spawn(move || {
         loop {
             // info!("set_into_read_task!");
+            let params;
+            let mut tasks;
+
+            // 获取任务
             {
-                let params = PARAMS.lock().unwrap();
-                // 生成任务
-                let mut tasks = TASKS.lock().unwrap();
+                let params_data = PARAMS.lock().unwrap();
+                params = params_data.clone();
+            }
+            // 获取参数
+            {
+                let tasks_data = TASKS.lock().unwrap();
+                tasks = tasks_data.clone();
+            }
 
-                // 所有参数根据 slave_id、register_type 2个条件 分成多组
-                // 从站地址!!!
-                // 寄存器地址类型 线圈 输入寄存器 保持寄存器
-                let mut groups: HashMap<(u8, u8), Vec<Param>> = HashMap::new();
-                for param in params.values() {
-                    let key: (u8, u8) = (param.slave_id, param.register_type);
-                    groups
-                        .entry(key)
-                        .or_insert_with(Vec::new)
-                        .push(param.clone());
-                }
+            // 所有参数根据 slave_id、register_type 2个条件 分成多组
+            // 从站地址!!!
+            // 寄存器地址类型 线圈 输入寄存器 保持寄存器
+            let mut groups: HashMap<(u8, u8), Vec<Param>> = HashMap::new();
+            for param in params.values() {
+                let key: (u8, u8) = (param.slave_id, param.register_type);
+                groups
+                    .entry(key)
+                    .or_insert_with(Vec::new)
+                    .push(param.clone());
+            }
 
-                // println!("组的数量: {}", groups.len());
+            // println!("组的数量: {}", groups.len());
 
-                // 遍历所有组，生成任务
-                for (slave_and_type, _params) in groups {
-                    // 遍历所有参数 获取最小的start_address，与最大的start_address + 4
-                    let mut min_start_address = 0;
-                    let mut max_start_address = 0;
+            // 遍历所有组，生成任务
+            for (slave_and_type, _params) in groups {
+                // 遍历所有参数 获取最小的start_address，与最大的start_address + 4
+                let mut min_start_address = 0;
+                let mut max_start_address = 0;
 
-                    for param in _params {
-                        if param.start_address <= min_start_address {
-                            min_start_address = param.start_address;
-                        }
-                        if param.start_address >= max_start_address {
-                            max_start_address = param.start_address;
-                        }
+                for param in _params {
+                    if param.start_address <= min_start_address {
+                        min_start_address = param.start_address;
                     }
-
-                    // 生成读取任务
-                    let task = Task {
-                        operation: 2,
-                        register_type: slave_and_type.1,
-                        start_address: min_start_address,
-                        quantity: max_start_address - min_start_address + 4,
-                        param_id: 1,
-                        slave_id: slave_and_type.0,
-                    };
-                    tasks.push(task);
-
-                    // println!("放入任务，任务数量: {}", tasks.len());
+                    if param.start_address >= max_start_address {
+                        max_start_address = param.start_address;
+                    }
                 }
+
+                // 生成读取任务
+                let task = Task {
+                    operation: 2,
+                    register_type: slave_and_type.1,
+                    start_address: min_start_address,
+                    quantity: max_start_address - min_start_address + 4,
+                    param_id: 1,
+                    slave_id: slave_and_type.0,
+                };
+                tasks.push(task);
+
+                // println!("放入任务，任务数量: {}", tasks.len());
             }
 
             thread::sleep(Duration::from_millis(500));

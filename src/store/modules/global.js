@@ -7,7 +7,7 @@ const global = {
         // { x: 6, y: 0, w: 2, h: 3, i: "1585465995a24e0fb1ca588e2ddfd10c", static: false },
         // { x: 8, y: 0, w: 2, h: 3, i: "7cdc58cb1de2455f91dcd58592639678", static: false },
       ],
-      gridState: 0, // 0 表示可编辑 1 表示采集 同时对应着 static
+      gridState: false, // false 表示可编辑 true 表示采集 同时对应着 static
       resizeTag: 0,  // 使用时间戳 发生变化时重新画图
     };
   },

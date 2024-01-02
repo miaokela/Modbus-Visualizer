@@ -1,6 +1,6 @@
 [connection]
 protocol_type = 1
-ip_address = "192.168.1.7"
+ip_address = "192.168.1.138"
 port = 502
 serial_port = "COM1"
 baud_rate = 9600

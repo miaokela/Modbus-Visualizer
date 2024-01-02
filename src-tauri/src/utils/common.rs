@@ -4,8 +4,8 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
-use tokio::runtime::Runtime;
 use crate::utils::modbus_lib::get_modbus_conn;
+use tokio::runtime::Runtime;
 
 // 定义数据结构
 #[allow(dead_code)]
@@ -153,15 +153,16 @@ pub fn execute_task(task: &Task, rt: &mut Runtime) -> Vec<u16> {
             conn.reconnect(&format!(
                 "{}:{}",
                 config.connection.ip_address, config.connection.port
-            ));
+            ), rt);
             println!("重连成功");
         }
 
         if task.register_type == 1 {
-            let result = conn.read_registers(task.start_address, task.quantity, rt);
+            let result = conn.read_registers(task.start_address, task.quantity);
             match result {
                 Ok(data) => {
                     println!("读取的数据: {:?}", data);
+                    return data;
                 },
                 Err(e) => {
                     println!("读取错误: {:?}", e);
@@ -232,7 +233,7 @@ pub fn convert_result(param: &Param, task: &Task, result: &[u16], size: usize) -
 pub fn task_thread() {
     // 在主线程中创建新的线程
     thread::spawn(move || {
-        let mut rt = Runtime::new().unwrap();
+        let mut rt: Runtime = Runtime::new().unwrap();
 
         loop {
             // println!("task_thread");

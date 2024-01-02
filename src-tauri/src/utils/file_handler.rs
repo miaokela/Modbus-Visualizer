@@ -1,5 +1,6 @@
 use crate::utils::common::{update_connection, update_param, Config};
 use notify::{watcher, RecursiveMode, Watcher};
+use tokio::runtime::Runtime;
 use std::sync::mpsc::channel;
 use std::time::Duration;
 use std::{fs, thread};
@@ -16,6 +17,8 @@ use std::fs::OpenOptions;
  */
 pub fn watch_param_config() {
     thread::spawn(move || {
+        let mut rt: Runtime = Runtime::new().unwrap();
+
         let (tx, rx) = channel();
 
         // 创建一个 watcher，当文件或目录变化时，事件会被发送到通道
@@ -47,7 +50,7 @@ pub fn watch_param_config() {
                             "{}:{}",
                             config.connection.ip_address, config.connection.port
                         );
-                        modbus_conn.reconnect(&new_conn);
+                        modbus_conn.reconnect(&new_conn, &mut rt);
                     }
                 }
                 Err(e) => println!("watch error: {:?}", e),

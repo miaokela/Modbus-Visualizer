@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 use tokio::time::{timeout, Duration};
 use std::io::Error;
 use tokio::runtime::Runtime;
-
+use futures::executor::block_on;
 
 pub struct ModbusConnection {
     pub connection: Option<tokio_modbus::client::Context>,
@@ -36,9 +36,8 @@ impl ModbusConnection {
         }
     }
 
-    pub fn connect(&mut self, ip: &str) {
+    pub fn connect(&mut self, ip: &str, rt: &mut Runtime) {
         self.disconnect();
-        let rt: Runtime = Runtime::new().unwrap();
         rt.block_on(async {
             let result = self.connect_async(ip).await;
 
@@ -71,10 +70,10 @@ impl ModbusConnection {
         vec![]
     }
     
-    pub fn read_registers(&mut self, addr: u16, nb: u16, rt: &mut Runtime) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
+    pub fn read_registers(&mut self, addr: u16, nb: u16) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
         match self.connection.as_mut() {
             Some(conn) => {
-                let result = rt.block_on(async {
+                let result = block_on(async {
                     conn.read_holding_registers(addr, nb).await
                 });
                 match result {
@@ -103,8 +102,8 @@ impl ModbusConnection {
     //         .unwrap();
     // }
 
-    pub fn reconnect(&mut self, ip: &str) {
-        self.connect(ip);
+    pub fn reconnect(&mut self, ip: &str, rt: &mut Runtime) {
+        self.connect(ip, rt);
     }
 }
 

@@ -1,5 +1,4 @@
 use std::sync::{Arc, Mutex};
-use log::info;
 use tokio_modbus::prelude::*;
 use lazy_static::lazy_static;
 use tokio::time::{timeout, Duration};
@@ -23,7 +22,7 @@ impl ModbusConnection {
 
     pub async fn connect_async(&mut self, ip: &str) -> Result<(), Error> {
         let socket_addr = ip.parse().unwrap();
-        let timeout_duration = Duration::from_millis(100);
+        let timeout_duration = Duration::from_millis(300);
 
         let result = timeout(timeout_duration, tcp::connect(socket_addr)).await;
 
@@ -72,17 +71,28 @@ impl ModbusConnection {
         vec![]
     }
     
-    pub async fn read_registers(&mut self, addr: u16, nb: u16) -> Vec<u16> {
+    pub fn read_registers(&mut self, addr: u16, nb: u16, rt: &mut Runtime) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
         match self.connection.as_mut() {
             Some(conn) => {
-                match conn.read_holding_registers(addr, nb).await {
-                    Ok(data) => return data,
-                    Err(e) => println!("Error reading holding registers: {}", e),
+                let result = rt.block_on(async {
+                    conn.read_holding_registers(addr, nb).await
+                });
+                match result {
+                    Ok(data) => {
+                        println!("Data: {:?}", data);
+                        Ok(data)
+                    },
+                    Err(e) => {
+                        println!("Err: {:?}", e);
+                        Err(Box::new(e))
+                    },
                 }
             },
-            None => println!("No connection available"),
+            None => {
+                println!("No connection available");
+                Err(Box::new(std::io::Error::new(std::io::ErrorKind::NotConnected, "No connection available")))
+            }
         }
-        vec![]
     }
 
     // pub fn write_registers(&mut self, addr: u16, src: &[u16]) {

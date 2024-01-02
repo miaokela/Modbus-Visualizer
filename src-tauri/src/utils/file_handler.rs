@@ -118,6 +118,7 @@ pub fn trigger_file_change() {
  */
 pub fn init_log() {
     let log_file_path = get_log_path();
+    // println!("日志路径{:?}", log_file_path);
     let file = OpenOptions::new()
     .append(true)
     .create(true)

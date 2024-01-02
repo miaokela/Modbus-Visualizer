@@ -46,7 +46,7 @@ const initChart = () => {
       const param = await getResult(props.paramId);
       const val = param.val;
 
-      console.log(`val: ${val}`);
+      console.log(`Get data: ${val}`);
       dataX.value.push(moment().format("HH:mm:ss"));
       dataY.value.push(val);
 
@@ -225,7 +225,7 @@ watch(
 )
 
 onMounted(() => {
-  console.log(123);
+  // console.log(123);
   nextTick(() => {
     initChart();
   });

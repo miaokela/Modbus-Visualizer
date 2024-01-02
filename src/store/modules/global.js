@@ -19,7 +19,7 @@ const global = {
       state.gridState = !state.gridState;
       // 如果gridState为0将layout的static全部设置成true，如果为1将layout的static全部设置成false
       let tmpLayout = [];
-      console.log(state.gridState)
+      // console.log(state.gridState)
       if (state.gridState) {
         state.layout.forEach((item) => {
           tmpLayout.push({ ...item, static: true });
@@ -30,7 +30,7 @@ const global = {
         });
       }
       state.layout = tmpLayout;
-      console.log(`layout: ${JSON.stringify(state.layout)}`);
+      // console.log(`layout: ${JSON.stringify(state.layout)}`);
     },
     UPDATE_LAYOUT(state, idx, layout) {
       const index = state.layout.findIndex((item) => item.idx === idx);

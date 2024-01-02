@@ -81,7 +81,7 @@ async function getResult(paramId) {
 
 async function getParams() {
   params.value = await invoke("get_params", {});
-  console.log(`params: ${JSON.stringify(params.value)}`);
+  // console.log(`params: ${JSON.stringify(params.value)}`);
 }
 
 onUnmounted(() => {

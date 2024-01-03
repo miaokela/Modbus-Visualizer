@@ -63,7 +63,7 @@ const initChart = () => {
       // 修改name
       chart.value.setOption({
         yAxis: {
-          name: `${param.name}`,
+          name: `${param.name}(${param.unit})`,
         },
       });
 

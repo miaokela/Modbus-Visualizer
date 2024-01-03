@@ -4,11 +4,48 @@
       <div class="window-control close" @click="appWindow.close()"></div>
       <div class="window-control minimize" @click="appWindow.minimize()"></div>
     </div>
-    <div class="title">Modbus Visualizer</div>
+    <div class="title">
+      <span>Modbus Visualizer</span>
+      <span class="status"><t-icon name="round" :style="{
+        color: isActive ? 'green' : 'red'
+      }"/></span>
+    </div>
   </div>
 </template>
 <script setup>
 import { appWindow } from "@tauri-apps/api/window";
+import { onMounted, onBeforeUnmount, ref } from "vue";
+import { invoke } from "@tauri-apps/api/tauri";
+
+/**
+ * 5s获取一次连接状态
+ */
+const timer = ref(null);
+const isActive = ref(false);
+
+const createCheckStatusTimer = async () => {
+  isActive.value = await invoke("is_active", {});
+  if (!timer.value) {
+    timer.value = setInterval(async () => {
+      isActive.value = await invoke("is_active", {});
+    }, 5000);
+  }
+};
+
+const removeTimer = () => {
+  if (timer.value) {
+    clearInterval(timer.value);
+    timer.value = null;
+  }
+};
+
+onMounted(() => {
+  createCheckStatusTimer();
+});
+
+onBeforeUnmount(() => {
+  removeTimer();
+});
 </script>
 <style lang="less" scoped>
 body {
@@ -22,7 +59,7 @@ body {
 
 .titlebar {
   height: 30px;
-  background: #2B2B2B;
+  background: #2b2b2b;
   user-select: none;
   display: flex;
   justify-content: space-between;
@@ -32,7 +69,7 @@ body {
   left: 0;
   right: 0;
   padding: 0 10px;
-  border: 1px solid #3C3F41;
+  border: 1px solid #3c3f41;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -40,7 +77,11 @@ body {
   text-align: center;
   flex-grow: 1;
   pointer-events: none;
-  color: #A9B7C6;
+  color: #a9b7c6;
+
+  .status {
+    margin-left: 10px;
+  }
 }
 
 .window-controls {
@@ -60,15 +101,15 @@ body {
 }
 
 .window-control.close {
-  background-color: #FF5F57;
+  background-color: #ff5f57;
 }
 
 .window-control.minimize {
-  background-color: #FFBD2E;
+  background-color: #ffbd2e;
 }
 
 .window-control.maximize {
-  background-color: #27C93F;
+  background-color: #27c93f;
 }
 
 .window-control.minimize::after {

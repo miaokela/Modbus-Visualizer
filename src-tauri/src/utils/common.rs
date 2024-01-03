@@ -1,10 +1,10 @@
+use crate::utils::modbus_lib::get_modbus_conn;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
-use crate::utils::modbus_lib::get_modbus_conn;
 use tokio::runtime::Runtime;
 
 // 定义数据结构
@@ -150,10 +150,13 @@ pub fn execute_task(task: &Task, rt: &mut Runtime) -> Vec<u16> {
 
         // 判断是否连接成功 没有连接成功就返回空 并且重连
         if !conn.is_connected() {
-            conn.reconnect(&format!(
-                "{}:{}",
-                config.connection.ip_address, config.connection.port
-            ), rt);
+            conn.reconnect(
+                &format!(
+                    "{}:{}",
+                    config.connection.ip_address, config.connection.port
+                ),
+                rt,
+            );
             println!("重连成功");
         }
 
@@ -163,9 +166,16 @@ pub fn execute_task(task: &Task, rt: &mut Runtime) -> Vec<u16> {
                 Ok(data) => {
                     println!("读取的数据: {:?}", data);
                     return data;
-                },
+                }
                 Err(e) => {
                     println!("读取错误: {:?}", e);
+                    conn.reconnect(
+                        &format!(
+                            "{}:{}",
+                            config.connection.ip_address, config.connection.port
+                        ),
+                        rt,
+                    );
                 }
             }
         }
@@ -250,7 +260,7 @@ pub fn task_thread() {
                 let mut tasks: std::sync::MutexGuard<'_, Vec<Task>> = TASKS.lock().unwrap();
                 // println!("获取的参数: {:?}", params);
                 // println!("获取的任务: {:?}", tasks);
-    
+
                 let c_task = tasks.pop();
                 match c_task {
                     Some(item) => {
@@ -262,7 +272,6 @@ pub fn task_thread() {
                         // println!("没有任务了");
                         continue;
                     }
-                    
                 }
             }
 
@@ -379,4 +388,16 @@ pub fn set_into_read_task() {
             thread::sleep(Duration::from_millis(1000));
         }
     });
+}
+
+#[tauri::command]
+pub fn is_active() -> bool {
+    let modbus_conn = get_modbus_conn();
+    let conn = modbus_conn.lock().unwrap();
+
+    // 判断是否连接成功 没有连接成功就返回空 并且重连
+    if conn.is_connected() {
+        return true;
+    }
+    return false;
 }

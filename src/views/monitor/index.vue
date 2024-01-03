@@ -46,8 +46,10 @@
           @resized="resizeChart"
         >
           <div class="l-item-slot" style="width: 100%; height: 100%;">
-            <div class="operation">
+            <div class="operation" v-if="!store.getters.gridState">
               <span class="remove" @click="removeItem(item.i)">x</span>
+            </div>
+            <div v-if="store.getters.gridState" class="gap">
             </div>
             <div style="width: 100%; height: 100%;">
               <param-line :param-id="item.paramId" />
@@ -224,5 +226,9 @@ onMounted(() => {
     cursor: pointer;
     padding-right: 10px;
   }
+}
+
+.gap {
+  height: 12px;
 }
 </style>

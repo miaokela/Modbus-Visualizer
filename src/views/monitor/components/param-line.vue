@@ -80,10 +80,10 @@ const initChart = () => {
   }
   chart.value.setOption({
     grid: {
-      left: "10%",
-      right: "10%",
-      top: "18%",
-      bottom: "25%",
+      left: "20px",
+      right: "27px",
+      top: "27px",
+      bottom: "27px",
       containLabel: true,
     },
     tooltip: {
@@ -220,6 +220,18 @@ watch(
   () => {
     if (chart.value) {
       chart.value.resize();
+    }
+  }
+)
+
+/**
+ * 监听是否重建立图表
+ */
+watch(
+  () => store.getters.gridState,
+  (n, o) => {
+    if (n) {
+      initChart();
     }
   }
 )

@@ -18,4 +18,14 @@ import topBar from "@/views/monitor/components/top-bar.vue";
 body {
   background-color: gray;
 }
+
+.mx-menu-host {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  .mx-context-menu {
+    top: -2px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+}
 </style>

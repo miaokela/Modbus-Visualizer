@@ -376,7 +376,7 @@ pub fn set_into_read_task() {
                     println!("放入任务，任务数量: {}", tasks.len());
                 }
             }
-            thread::sleep(Duration::from_millis(500));
+            thread::sleep(Duration::from_millis(1000));
         }
     });
 }

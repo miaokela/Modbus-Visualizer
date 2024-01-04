@@ -38,6 +38,11 @@
       }
     },
     "bundle": {
+      "windows": {
+        "wix": {
+          "language": "zh-CN"
+        }
+      },
       "active": true,
       "targets": "all",
       "identifier": "com.tauri.modbus-monitor",

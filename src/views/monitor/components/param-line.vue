@@ -79,6 +79,7 @@ const initChart = () => {
     setTimeout(updateData, _during); // 每隔1秒更新一次数据
   }
   chart.value.setOption({
+    smooth: true,
     grid: {
       left: "20px",
       right: "27px",

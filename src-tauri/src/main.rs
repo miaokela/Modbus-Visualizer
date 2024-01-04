@@ -5,7 +5,7 @@ mod utils;
 
 use log::info;
 use utils::common::*;
-use utils::file_handler::{watch_param_config, trigger_file_change, init_log};
+use utils::file_handler::{watch_param_config, trigger_file_change, init_log, download_file};
 
 
 fn main() {
@@ -23,7 +23,7 @@ fn main() {
     // 触发保存文件
     trigger_file_change();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_result, get_params, is_active])
+        .invoke_handler(tauri::generate_handler![get_result, get_params, is_active, download_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -10,7 +10,8 @@ use std::env;
 use std::path::PathBuf;
 use log::{LevelFilter, info};
 use simplelog::{WriteLogger, Config as LogConfig};
-use std::fs::OpenOptions;
+use std::fs::{OpenOptions, File};
+use std::io::Read;
 
 /**
  * 监听文件变化线程
@@ -131,3 +132,17 @@ pub fn init_log() {
     WriteLogger::init(LevelFilter::Info, LogConfig::default(), file).unwrap();
 }
 
+/**
+ * 读取模板文件
+ */
+fn read_file(path: &str) -> std::io::Result<Vec<u8>> {
+    let mut file = File::open(path)?;
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)?;
+    Ok(buffer)
+}
+
+#[tauri::command]
+pub fn download_file() -> Result<Vec<u8>, String> {
+    read_file("参数模板.xlsx").map_err(|e| e.to_string())
+}

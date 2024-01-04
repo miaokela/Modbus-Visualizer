@@ -19,30 +19,35 @@
     style="margin: 2px 10px; position: fixed; right: 0; top: 0"
     z-index="9999"
   >
-    <span style="font-size: 11px; margin-right: 5px; color: #a9b7c6">模板下载</span>
-    <a @click="open('/参数模板.xlsx')" download style="cursor: pointer"
+    <span style="font-size: 11px; margin-right: 5px; color: #a9b7c6"
+      >模板下载</span
+    >
+    <a @click="downloadTemplate" download style="cursor: pointer"
       ><t-icon name="download"></t-icon
     ></a>
-    <span style="font-size: 11px; margin: 0 5px 0 10px; color: #a9b7c6">导入文件</span>
-    <a style="cursor: pointer"
-      ><t-icon name="file-import"></t-icon
-    ></a>
+    <span style="font-size: 11px; margin: 0 5px 0 10px; color: #a9b7c6"
+      >导入文件</span
+    >
+    <a style="cursor: pointer"><t-icon name="file-import"></t-icon></a>
   </span>
 </template>
 <script setup>
 import { appWindow } from "@tauri-apps/api/window";
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
-import { open } from '@tauri-apps/api/shell';
-
+import { writeBinaryFile } from '@tauri-apps/api/fs'
+import { save } from '@tauri-apps/api/dialog'
 
 /**
  * 下载模板
  */
-const downloadTemplate = () => {
-  open('/参数模板.xlsx')
+const downloadTemplate = async () => {
+  const data = await invoke("download_file", {});
+  const path = await save({ defaultPath: '参数模板.xlsx' });
+  if (path) {
+    await writeBinaryFile(path, data);
+  }
 };
-
 
 /**
  * 5s获取一次连接状态

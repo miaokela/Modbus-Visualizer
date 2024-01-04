@@ -121,7 +121,7 @@ const onContextMenu = (e) => {
     theme: "flat dark",
     items: [
       {
-        label: "Add Line Chart",
+        label: "添加曲线",
         children: paramChildren.value,
       },
     ],

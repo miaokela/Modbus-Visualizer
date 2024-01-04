@@ -7,6 +7,13 @@ use std::thread;
 use std::time::Duration;
 use tokio::runtime::Runtime;
 
+#[derive(Debug)]
+enum MyError {
+    InvalidRegisterType,
+    ReadRegistersError,
+    ReadInputRegistersError,
+}
+
 // 定义数据结构
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -29,8 +36,6 @@ pub struct Param {
     pub register_type: u8,
     pub name: String,
     pub unit: String,
-    pub cycle_time: u16,
-    pub curve_val: Vec<f64>,
 }
 
 #[allow(dead_code)]
@@ -48,20 +53,13 @@ pub struct ModbusResult {
     unit: String,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Connection {
-    pub protocol_type: u8,
     pub ip_address: String,
     pub port: u16,
-    pub serial_port: String,
-    pub baud_rate: u16,
-    pub data_bit: u8,
-    pub stop_bit: u8,
-    pub parity_bit: u8,
-    pub create_time: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
     pub connection: Connection,
     pub params: Vec<Param>,
@@ -74,15 +72,8 @@ lazy_static! {
     static ref RESULTS: Arc<Mutex<HashMap<u16, ModbusResult>>> =
         Arc::new(Mutex::new(HashMap::new()));
     static ref CONNECTION: Arc<Mutex<Connection>> = Arc::new(Mutex::new(Connection {
-        protocol_type: 1,
         ip_address: "192.168.1.6".to_string(),
         port: 502,
-        serial_port: "COM1".to_string(),
-        baud_rate: 9600,
-        data_bit: 1,
-        stop_bit: 1,
-        parity_bit: 8,
-        create_time: "2020-10-10 10:10:10".to_string(),
     }));
 }
 
@@ -160,8 +151,22 @@ pub fn execute_task(task: &Task, rt: &mut Runtime) -> Vec<u16> {
             println!("重连成功");
         }
 
-        if task.register_type == 1 {
-            let result = conn.read_registers(task.start_address, task.quantity);
+        let read_array: [u8; 2] = [1, 2];
+        if read_array.contains(&task.register_type) {
+            let mut result = Err(MyError::InvalidRegisterType);
+
+            if task.register_type == 1 {
+                match conn.read_registers(task.start_address, task.quantity) {
+                    Ok(data) => result = Ok(data),
+                    Err(_) => result = Err(MyError::ReadRegistersError),
+                }
+            }
+            if task.register_type == 2 {
+                match conn.read_input_registers(task.start_address, task.quantity) {
+                    Ok(data) => result = Ok(data),
+                    Err(_) => result = Err(MyError::ReadInputRegistersError),
+                }
+            }
             match result {
                 Ok(data) => {
                     println!("读取的数据: {:?}", data);
@@ -179,8 +184,6 @@ pub fn execute_task(task: &Task, rt: &mut Runtime) -> Vec<u16> {
                 }
             }
         }
-
-        if task.register_type == 2 {}
     }
 
     // 返回 [1,2,3,4]这样的数据，但是长度不固定
@@ -382,7 +385,7 @@ pub fn set_into_read_task() {
                     };
                     tasks.push(task);
 
-                    println!("放入任务，任务数量: {}", tasks.len());
+                    // println!("放入任务，任务数量: {}", tasks.len());
                 }
             }
             thread::sleep(Duration::from_millis(1000));

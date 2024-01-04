@@ -57,17 +57,28 @@ impl ModbusConnection {
         self.connection = None;
     }
 
-    pub async fn read_input_registers(&mut self, addr: u16, nb: u16) -> Vec<u16> {
+    pub fn read_input_registers(&mut self, addr: u16, nb: u16) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
         match self.connection.as_mut() {
             Some(conn) => {
-                match conn.read_input_registers(addr, nb).await {
-                    Ok(data) => return data,
-                    Err(e) => println!("Error reading input registers: {}", e),
+                let result = block_on(async {
+                    conn.read_input_registers(addr, nb).await
+                });
+                match result {
+                    Ok(data) => {
+                        // println!("Data: {:?}", data);
+                        Ok(data)
+                    },
+                    Err(e) => {
+                        println!("Err: {:?}", e);
+                        Err(Box::new(e))
+                    },
                 }
             },
-            None => println!("No connection available"),
+            None => {
+                println!("No connection available");
+                Err(Box::new(std::io::Error::new(std::io::ErrorKind::NotConnected, "No connection available")))
+            }
         }
-        vec![]
     }
     
     pub fn read_registers(&mut self, addr: u16, nb: u16) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
@@ -78,7 +89,7 @@ impl ModbusConnection {
                 });
                 match result {
                     Ok(data) => {
-                        println!("Data: {:?}", data);
+                        // println!("Data: {:?}", data);
                         Ok(data)
                     },
                     Err(e) => {

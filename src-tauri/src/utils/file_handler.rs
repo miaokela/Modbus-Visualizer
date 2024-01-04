@@ -11,7 +11,7 @@ use std::path::PathBuf;
 use log::{LevelFilter, info};
 use simplelog::{WriteLogger, Config as LogConfig};
 use std::fs::{OpenOptions, File};
-use std::io::Read;
+use std::io::{Read, Write};
 
 /**
  * 监听文件变化线程
@@ -142,7 +142,24 @@ fn read_file(path: &str) -> std::io::Result<Vec<u8>> {
     Ok(buffer)
 }
 
+/**
+ * 下载模板文件
+ */
 #[tauri::command]
 pub fn download_file() -> Result<Vec<u8>, String> {
     read_file("参数模板.xlsx").map_err(|e| e.to_string())
+}
+
+/**
+ * 导入参数文件
+ */
+#[tauri::command]
+pub fn convert_json_to_toml(json: String) -> Result<String, String> {
+    let config: Config = serde_json::from_str(&json).map_err(|e| e.to_string())?;
+    let toml = toml::to_string(&config).map_err(|e| e.to_string())?;
+
+    let mut file = File::create("modbus.toml").unwrap();
+    file.write_all(toml.as_bytes()).unwrap();
+
+    Ok("Conversion successful".to_string())
 }

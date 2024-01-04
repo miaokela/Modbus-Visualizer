@@ -1,13 +1,6 @@
 [connection]
-protocol_type = 1
 ip_address = "192.168.1.138"
 port = 502
-serial_port = "COM1"
-baud_rate = 9600
-data_bit = 8
-parity_bit = 0
-stop_bit = 1
-create_time = "2022-02-14 00:00:46"
 
 [[params]]
 param_id = 1
@@ -16,10 +9,8 @@ start_address = 0
 data_type = 3
 operation = 2
 register_type = 1
-name = "Param_01"
-unit = "V"
-cycle_time = 2
-curve_val = [1, 2.2, 3.3]
+name = "电流"
+unit = "A"
 
 [[params]]
 param_id = 2
@@ -28,7 +19,15 @@ start_address = 2
 data_type = 3
 operation = 2
 register_type = 1
-name = "Param_02"
+name = "电压"
 unit = "V"
-cycle_time = 2
-curve_val = [1, 2.2, 3.3]
+
+[[params]]
+param_id = 3
+slave_id = 1
+start_address = 4
+data_type = 1
+operation = 2
+register_type = 1
+name = "温度"
+unit = "℃"

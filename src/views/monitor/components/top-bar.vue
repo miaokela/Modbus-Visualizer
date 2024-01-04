@@ -28,22 +28,98 @@
     <span style="font-size: 11px; margin: 0 5px 0 10px; color: #a9b7c6"
       >导入文件</span
     >
-    <a style="cursor: pointer"><t-icon name="file-import"></t-icon></a>
+    <a style="cursor: pointer" @click="selectAndParseFile"
+      ><t-icon name="file-import"></t-icon
+    ></a>
   </span>
 </template>
 <script setup>
 import { appWindow } from "@tauri-apps/api/window";
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
-import { writeBinaryFile } from '@tauri-apps/api/fs'
-import { save } from '@tauri-apps/api/dialog'
+import { writeBinaryFile, readBinaryFile } from "@tauri-apps/api/fs";
+import { save, open } from "@tauri-apps/api/dialog";
+import * as XLSX from "xlsx";
+import { dialog } from "@tauri-apps/api";
+
+/**
+ * 上传参数文件
+ */
+const selectAndParseFile = async () => {
+  const path = await open({ multiple: false });
+  if (path) {
+    const data = await readBinaryFile(path);
+    const workbook = XLSX.read(data, { type: "array" });
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    const ip_address = worksheet["A3"].v;
+    const port = worksheet["B3"].v;
+
+    const params = XLSX.utils.sheet_to_json(worksheet, {
+      range: "A6:G40",
+      header: [
+        "param_id",
+        "name",
+        "unit",
+        "slave_id",
+        "start_address",
+        "data_type",
+        "register_type",
+      ],
+    });
+
+    const _params = [];
+    // 对params进行处理，参数名称 从站地址 起始地址 数据类型 寄存器类型 有任何一个没填写的，删除该条记录
+    params.forEach((param) => {
+      if (!param.name || !param.slave_id || !param.data_type) {
+        params.splice(params.indexOf(param), 1);
+      } else {
+        // 参数起始值不存在，则默认为0
+        if (!param.start_address) {
+          param.start_address = 0;
+        }
+
+        // 所有参数都添加 operation=2
+        param.operation = 2;
+        // 将数据类型 按 1为int16 2为int32 3为float32 4为float64 转化成对应的数字
+        param.data_type =
+          param.data_type === "int16"
+            ? 1
+            : param.data_type === "int32"
+            ? 2
+            : param.data_type === "float32"
+            ? 3
+            : 4;
+        // 将寄存器类型 按 1 表示保持寄存器 2 表示输入寄存器 转化成数字
+        param.register_type = param.register_type === "保持寄存器" ? 1 : 2;
+        _params.push(param);
+      }
+    });
+
+    const d = {
+      connection: {
+        ip_address,
+        port,
+      },
+      params: _params,
+    };
+
+    await invoke("convert_json_to_toml", { json: JSON.stringify(d) })
+      .then((response) => {
+        dialog.message("导入成功");
+      })
+      .catch((error) => {
+        dialog.message("导入失败");
+      });
+  }
+};
 
 /**
  * 下载模板
  */
 const downloadTemplate = async () => {
   const data = await invoke("download_file", {});
-  const path = await save({ defaultPath: '参数模板.xlsx' });
+  const path = await save({ defaultPath: "参数模板.xlsx" });
   if (path) {
     await writeBinaryFile(path, data);
   }

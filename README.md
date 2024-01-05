@@ -54,3 +54,9 @@ export default {
 
 #### Windows下打包遇到的问题解决方案
 > https://zhuanlan.zhihu.com/p/623152313
+
+- 添加aarch64
+> rustup target add aarch64-pc-windows-msvc
+
+- 添加i686
+> rustup target add i686-pc-windows-msvc

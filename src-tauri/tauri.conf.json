@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "modbus-monitor",
+    "productName": "modbus-visualizer",
     "version": "0.0.0"
   },
   "tauri": {

@@ -5,13 +5,14 @@ mod utils;
 
 use log::info;
 use utils::common::*;
-use utils::file_handler::{download_file, init_log, trigger_file_change, watch_param_config, convert_json_to_toml};
+use utils::file_handler::{download_file, init_log, create_dir_with_permissions, watch_param_config, convert_json_to_toml};
 
 fn main() {
     info!("Start up app!");
     init_log();
 
-    trigger_file_change();
+    _ = create_dir_with_permissions();
+    // trigger_file_change();
 
     set_into_read_task();
 
@@ -20,7 +21,7 @@ fn main() {
     task_thread();
 
     // 触发保存文件
-    trigger_file_change();
+    // trigger_file_change();
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_result,

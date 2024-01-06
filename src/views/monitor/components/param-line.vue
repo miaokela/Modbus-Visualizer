@@ -68,7 +68,7 @@ const initChart = () => {
       });
 
       // 如果数据超过一定的长度，则移除最开始的数据，保持一定的显示范围
-      if (dataX.value.length > 50) {
+      if (dataX.value.length > 2 * 60) {
         dataX.value.shift();
         dataY.value.shift();
       }

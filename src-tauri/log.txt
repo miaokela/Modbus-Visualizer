@@ -268,3 +268,113 @@
 08:44:24 [INFO] File changed
 08:44:34 [INFO] File changed
 08:45:34 [INFO] File changed
+07:05:27 [INFO] trigger change
+07:05:27 [INFO] trigger change
+07:05:27 [INFO] File changed
+07:05:37 [INFO] File changed
+09:10:21 [INFO] trigger change
+09:10:21 [INFO] trigger change
+09:10:21 [INFO] File changed
+09:10:31 [INFO] File changed
+09:29:19 [INFO] trigger change
+09:29:19 [INFO] trigger change
+09:29:19 [INFO] File changed
+09:29:29 [INFO] File changed
+10:18:18 [INFO] trigger change
+10:18:18 [INFO] trigger change
+10:19:01 [INFO] File changed
+10:19:11 [INFO] File changed
+10:55:45 [INFO] trigger change
+10:55:45 [INFO] trigger change
+10:55:45 [INFO] File changed
+10:56:01 [INFO] File changed
+11:35:19 [INFO] trigger change
+11:35:19 [INFO] trigger change
+11:35:19 [INFO] File changed
+11:40:47 [INFO] trigger change
+11:40:58 [INFO] File changed
+11:56:38 [INFO] trigger change
+11:59:38 [INFO] trigger change
+11:59:46 [INFO] File changed
+12:02:20 [INFO] trigger change
+12:09:36 [INFO] trigger change
+12:09:42 [INFO] File changed
+12:10:34 [INFO] trigger change
+12:11:01 [INFO] trigger change
+12:21:12 [INFO] trigger change
+12:21:12 [INFO] home_dir: "/Users/kela"
+12:21:12 [INFO] home_dir: "/Users/kela"
+13:14:13 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:14:19 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:14:19 [INFO] Conversion successful
+13:14:29 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:14:29 [INFO] Conversion successful
+13:19:36 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:19:43 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:19:43 [INFO] Conversion successful
+13:19:43 [INFO] File changed
+13:19:43 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.7", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:19:53 [INFO] File changed
+13:19:53 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.7", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:20:38 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:20:46 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:20:46 [INFO] Conversion successful
+13:20:46 [INFO] File changed
+13:20:46 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.7", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:20:46 [INFO] modbus.toml changed
+13:20:56 [INFO] File changed
+13:20:56 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.7", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:20:56 [INFO] modbus.toml changed
+13:24:10 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:26:10 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:27:13 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:27:13 [INFO] Conversion successful
+13:27:13 [INFO] File changed
+13:27:13 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.7", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:27:13 [INFO] modbus.toml changed
+13:27:23 [INFO] File changed
+13:27:23 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.7", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:27:23 [INFO] modbus.toml changed
+13:30:09 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:30:09 [INFO] Conversion successful
+13:30:09 [INFO] File changed
+13:30:09 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:30:09 [INFO] modbus.toml changed
+13:30:19 [INFO] File changed
+13:30:19 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 2, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 2, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 2, name: "温度", unit: "℃" }] }
+13:30:19 [INFO] modbus.toml changed
+13:39:07 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:39:07 [INFO] Conversion successful
+13:39:07 [INFO] File changed
+13:39:07 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+13:39:07 [INFO] modbus.toml changed
+13:39:17 [INFO] File changed
+13:39:17 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+13:39:17 [INFO] modbus.toml changed
+13:49:32 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:49:51 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+13:49:51 [INFO] Conversion successful
+13:49:51 [INFO] File changed
+13:49:51 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+13:49:51 [INFO] modbus.toml changed
+13:50:01 [INFO] File changed
+13:50:01 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+13:50:01 [INFO] modbus.toml changed
+13:59:54 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+14:00:03 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+14:00:03 [INFO] Conversion successful
+14:00:03 [INFO] File changed
+14:00:03 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+14:00:03 [INFO] modbus.toml changed
+14:00:13 [INFO] File changed
+14:00:13 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+14:00:13 [INFO] modbus.toml changed
+14:09:51 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+14:10:02 [INFO] path: "/Users/kela/.modbus-visualizer/.modbus.toml"
+14:10:02 [INFO] Conversion successful
+14:10:02 [INFO] File changed
+14:10:02 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+14:10:02 [INFO] modbus.toml changed
+14:10:12 [INFO] File changed
+14:10:12 [INFO] config: Config { connection: Connection { ip_address: "192.168.1.6", port: 502 }, params: [Param { param_id: 1, slave_id: 1, start_address: 0, data_type: 3, operation: 2, register_type: 1, name: "电流", unit: "A" }, Param { param_id: 2, slave_id: 1, start_address: 2, data_type: 3, operation: 2, register_type: 1, name: "电压", unit: "V" }, Param { param_id: 3, slave_id: 1, start_address: 4, data_type: 1, operation: 2, register_type: 1, name: "温度", unit: "℃" }] }
+14:10:12 [INFO] modbus.toml changed

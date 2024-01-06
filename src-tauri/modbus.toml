@@ -1,5 +1,5 @@
 [connection]
-ip_address = "192.168.1.138"
+ip_address = "192.168.1.7"
 port = 502
 
 [[params]]
@@ -8,7 +8,7 @@ slave_id = 1
 start_address = 0
 data_type = 3
 operation = 2
-register_type = 1
+register_type = 2
 name = "电流"
 unit = "A"
 
@@ -18,7 +18,7 @@ slave_id = 1
 start_address = 2
 data_type = 3
 operation = 2
-register_type = 1
+register_type = 2
 name = "电压"
 unit = "V"
 
@@ -28,6 +28,6 @@ slave_id = 1
 start_address = 4
 data_type = 1
 operation = 2
-register_type = 1
+register_type = 2
 name = "温度"
 unit = "℃"

@@ -108,10 +108,13 @@ const generateUUID = () => {
 /**
  * context-menu
  */
-const onContextMenu = (e) => {
+const onContextMenu = async (e) => {
+  e.preventDefault();
   if (store.getters.gridState) {
     return;
   }
+
+  await getParams();
   //prevent the browser's default menu
   e.preventDefault();
   //show your menu
@@ -126,6 +129,7 @@ const onContextMenu = (e) => {
       },
     ],
   });
+  e.preventDefault();
 };
 
 const paramChildren = computed(() => {
@@ -139,9 +143,20 @@ const paramChildren = computed(() => {
       continue;
     }
 
+    // 判断是否禁用
+    // 判断 store.getters.layout中是否有paramId
+    const layoutIndex = store.getters.layout.findIndex(
+      (_item) => _item.paramId === item.param_id
+    );
+    let disabled = false;
+    if (layoutIndex !== -1) {
+      disabled = true;
+    }
+
     children.push({
       label: item.name,
       value: item.param_id,
+      disabled: disabled,
       onClick: () => {
         store.dispatch("addLayout", {
           x: (layout.value.length * 2) % (colNum.value || 12),

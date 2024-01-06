@@ -169,7 +169,7 @@ pub fn execute_task(task: &Task, rt: &mut Runtime) -> Vec<u16> {
             }
             match result {
                 Ok(data) => {
-                    println!("读取的数据: {:?}", data);
+                    // println!("读取的数据: {:?}", data);
                     return data;
                 }
                 Err(e) => {
@@ -278,7 +278,7 @@ pub fn task_thread() {
                 }
             }
 
-            println!("消耗任务: {:?}", task);
+            // println!("消耗任务: {:?}", task);
             // 执行任务
             let result = execute_task(&task, &mut rt);
 
@@ -357,7 +357,7 @@ pub fn set_into_read_task() {
                         .push(param.clone());
                 }
 
-                println!("组的数量: {}", groups.len());
+                // println!("组的数量: {}", groups.len());
 
                 // 遍历所有组，生成任务
                 for (slave_and_type, _params) in groups {

@@ -67,7 +67,7 @@ const selectAndParseFile = async () => {
         "register_type",
       ],
     });
-
+    console.log(`上传参数: ${JSON.stringify(params)}`);
     const _params = [];
     // 对params进行处理，参数名称 从站地址 起始地址 数据类型 寄存器类型 有任何一个没填写的，删除该条记录
     params.forEach((param) => {
@@ -109,7 +109,7 @@ const selectAndParseFile = async () => {
         dialog.message("导入成功");
       })
       .catch((error) => {
-        dialog.message("导入失败");
+        dialog.message(`导入失败: ${error}`);
       });
   }
 };
@@ -118,7 +118,9 @@ const selectAndParseFile = async () => {
  * 下载模板
  */
 const downloadTemplate = async () => {
-  const data = await invoke("download_file", {});
+  const data = await invoke("download_file", {}).catch(e => {
+    console.log(`下载参数模板失败: ${e}`);
+  });
   const path = await save({ defaultPath: "参数模板.xlsx" });
   if (path) {
     await writeBinaryFile(path, data);
@@ -136,7 +138,7 @@ const createCheckStatusTimer = async () => {
   if (!timer.value) {
     timer.value = setInterval(async () => {
       isActive.value = await invoke("is_active", {});
-    }, 5000);
+    }, 2000);
   }
 };
 
